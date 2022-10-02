@@ -1,0 +1,58 @@
+using Newtonsoft.Json;
+using System.Collections.Generic;
+
+namespace Shiptoboxes.External.DhlExpress.Response
+{
+    public class DhlTrackingResponse
+    {
+        [JsonProperty("shipments")]
+        public List<Shipments> Shipments { get; set; }
+    }
+
+    public class Shipments
+    {
+        [JsonProperty("status")]
+        public Status Status { get; set; }
+
+        [JsonProperty("id")]
+        public string TrackingNumber { get; set; }
+    }
+    public class Status
+    {
+        [JsonProperty("statusCode")]
+        public string StatusCode { get; set; }
+
+        [JsonProperty("events")]
+        public List<Events> Events { get; set; }
+
+    }
+    public class Events
+    {
+        [JsonProperty("statusCode")]
+        public string StatusCode { get; set; }
+
+        [JsonProperty("status")]
+        public string Status { get; set; }
+
+        [JsonProperty("description")]
+        public string Description { get; set; }
+
+        [JsonProperty("timestamp")]
+        public string Timestamp { get; set; }
+
+        [JsonProperty("location")]
+        public Location Location { get; set; }
+    }
+    public class Location
+    {
+        [JsonProperty("address")]
+        public Address Address { get; set; }
+    }
+    public class Address
+    {
+        [JsonProperty("countryCode")]
+        public string CountryCode { get; set; }
+    }
+
+}
+
