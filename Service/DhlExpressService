@@ -1,0 +1,45 @@
+using Newtonsoft.Json;
+using RestSharp;
+using Shiptoboxes.External.DhlExpress.Request;
+using Shiptoboxes.External.DhlExpress.Response;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using static Shiptoboxes.External.Common.Exceptions.ExternalExceptionResource;
+
+namespace Shiptoboxes.External.DhlExpress
+{
+    public class DhlExpressService : IDhlExpressService
+    {
+
+        private DhlExpressServiceConfiguration _dhlExpressServiceConfiguration;
+
+        public void Configure(DhlExpressServiceConfiguration dhlExpressServiceConfiguration)
+        {
+            _dhlExpressServiceConfiguration = dhlExpressServiceConfiguration;
+        }
+
+        public bool VerifyCredentials(string username, string password, string accountNumber)
+        {
+            return true;
+        }
+
+        public async Task<List<DhlTrackingResponse>> GetTrackingDetailsByTrackingNumbers(List<string> trackingNumbers)
+        {
+            var result = new List<DhlTrackingResponse>();
+            foreach (var trackingNumber in trackingNumbers)
+            {
+                var client = new RestClient($"{_dhlExpressServiceConfiguration.TrackingUrl}{trackingNumber}");
+                var request = new RestRequest(Method.GET)
+                {
+                    RequestFormat = DataFormat.Json,
+                };
+                request.AddHeader("DHL-API-Key", _dhlExpressServiceConfiguration.ApiKey);
+                request.RequestFormat = DataFormat.Json;
+                IRestResponse response = client.Execute(request);
+                result.Add(JsonConvert.DeserializeObject<DhlTrackingResponse>(response.Content));
+            }
+            return result;
+        }
+    }
+}
